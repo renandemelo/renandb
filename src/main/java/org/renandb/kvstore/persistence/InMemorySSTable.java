@@ -46,9 +46,7 @@ public class InMemorySSTable implements SSTableSegment {
                 }
                 byte[] contentBytes = new byte[size];
                 is.read(contentBytes);
-//                System.out.println("Read" + contentBytes.length);
                 Record record = Serializer.restore(contentBytes, Record.class);
-//                System.out.println("Result pair:" + record.toPair());
                 this.register(record);
             }
         }
@@ -76,10 +74,10 @@ public class InMemorySSTable implements SSTableSegment {
     }
     public synchronized void store(Record record) throws IOException {
         byte[] content = Serializer.serialize(record);
-        byte[] size = new byte[1];
-        size[0] = (byte) content.length;
-        Files.write(logFile, size, StandardOpenOption.APPEND);
-        Files.write(logFile, content, StandardOpenOption.APPEND);
+        try (FileOutputStream fos = new FileOutputStream(logFile.toFile(), true)){
+            fos.write(content.length);
+            fos.write(content);
+        }
         register(record);
     }
 
