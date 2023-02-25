@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.*;
@@ -15,11 +16,10 @@ public class Serializer {
     private static final ObjectReader objectReader;
 
     static {
-        MAPPER = new ObjectMapper();
-        MAPPER.registerModules(new JavaTimeModule());
-        MAPPER.enableDefaultTyping();
+        SmileFactory factory = new SmileFactory();
+        MAPPER = new ObjectMapper(factory);
+        factory.setCodec(MAPPER);
         objectReader = MAPPER.reader();
-        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectWriter = MAPPER.writer();
     }
     public static byte[] serialize(Object object) throws IOException {
