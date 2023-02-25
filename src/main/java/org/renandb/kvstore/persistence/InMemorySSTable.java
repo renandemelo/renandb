@@ -40,15 +40,17 @@ public class InMemorySSTable implements SSTableSegment {
     private void restoreFromFile(Path path) throws IOException {
         try (InputStream is = new ByteArrayInputStream(Files.readAllBytes(path))) {
             while(true){
-                ObjectInputStream ois = new ObjectInputStream(is);
-                Record record = (Record) ois.readObject();
-                ois.close();
+                int size = is.read();
+                if(size == -1){
+                    break;
+                }
+                byte[] contentBytes = new byte[size];
+                is.read(contentBytes);
+//                System.out.println("Read" + contentBytes.length);
+                Record record = Serializer.restore(contentBytes, Record.class);
+//                System.out.println("Result pair:" + record.toPair());
                 this.register(record);
             }
-        } catch (java.io.EOFException ex){
-          // Success! we read the whole file.
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -73,7 +75,11 @@ public class InMemorySSTable implements SSTableSegment {
         sizeInBytes += record.sizeInBytes();
     }
     public synchronized void store(Record record) throws IOException {
-        Files.write(logFile, Serializer.serialize(record), StandardOpenOption.APPEND);
+        byte[] content = Serializer.serialize(record);
+        byte[] size = new byte[1];
+        size[0] = (byte) content.length;
+        Files.write(logFile, size, StandardOpenOption.APPEND);
+        Files.write(logFile, content, StandardOpenOption.APPEND);
         register(record);
     }
 

@@ -34,7 +34,6 @@ import org.renandb.kvstore.persistence.record.Record;
  */
 public class LSMPersistentStorage implements MergedSegmentReceiver {
 
-//    private final Path storageDir;
     private final StateManager stateManager;
     private final StorageConfig config;
     private LinkedList<SSTableSegment> segments;
