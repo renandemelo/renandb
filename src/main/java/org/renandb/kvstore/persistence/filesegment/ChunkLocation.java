@@ -1,14 +1,16 @@
 package org.renandb.kvstore.persistence.filesegment;
 
-import java.io.Serializable;
+import java.util.Objects;
 
-public class ChunkLocation implements Serializable, Comparable<ChunkLocation>{
-
-    private static final long serialVersionUID = 85824334L;
+public class ChunkLocation implements Comparable<ChunkLocation>{
 
     private String startKey;
     private int position;
     private int size;
+
+    private ChunkLocation(){
+
+    }
 
     public ChunkLocation(String firstKey, int position, int size) {
         this.startKey = firstKey;
@@ -31,5 +33,18 @@ public class ChunkLocation implements Serializable, Comparable<ChunkLocation>{
     @Override
     public int compareTo(ChunkLocation o) {
         return this.startKey.compareTo(o.getStartKey());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChunkLocation that = (ChunkLocation) o;
+        return position == that.position && size == that.size && startKey.equals(that.startKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startKey, position, size);
     }
 }

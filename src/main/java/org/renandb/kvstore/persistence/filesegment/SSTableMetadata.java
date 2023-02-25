@@ -5,11 +5,12 @@ import org.renandb.kvstore.persistence.BloomFilter;
 import java.io.Serializable;
 import java.util.TreeSet;
 
-public class SSTableMetadata implements Serializable {
-
-    private static final long serialVersionUID = 8582433437601788991L;
+public class SSTableMetadata {
+//    private static final long serialVersionUID = 8582433437601788991L;
     private BloomFilter bloomFilter;
     private TreeSet<ChunkLocation> chunkLocations = new TreeSet<>();
+
+    public SSTableMetadata(){}
     public SSTableMetadata(BloomFilter bloomFilter) {
         this.bloomFilter = bloomFilter;
     }

@@ -70,7 +70,7 @@ public class InMemorySSTable implements SSTableSegment {
     private synchronized void register(Record record){
         this.bloomFilter.register(record.getKey());
         records.put(record.getKey(), record);
-        sizeInBytes += record.getSizeInBytes();
+        sizeInBytes += record.sizeInBytes();
     }
     public synchronized void store(Record record) throws IOException {
         Files.write(logFile, Serializer.serialize(record), StandardOpenOption.APPEND);

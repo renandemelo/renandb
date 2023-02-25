@@ -79,11 +79,11 @@ public class SSTableFileCreator {
         while(iterator.hasNext()){
             Record record = iterator.next();
             current.add(record);
-            if(current.isFull(maxChunkSizeInBytes)){
+            if(current.full(maxChunkSizeInBytes)){
                 closeChunk();
             }
         }
-        if(!current.isEmpty()) {
+        if(!current.empty()) {
             closeChunk();
         }
     }
@@ -92,7 +92,7 @@ public class SSTableFileCreator {
         byte[] serialized = Serializer.serialize(current);
         int chunkSize = serialized.length;
         bos.write(serialized);
-        metadata.add(new ChunkLocation(current.getFirstKey(), contentOffset, chunkSize));
+        metadata.add(new ChunkLocation(current.firstKey(), contentOffset, chunkSize));
         contentOffset += chunkSize;
         openChunk();
     }

@@ -2,15 +2,16 @@ package org.renandb.kvstore.persistence.record;
 
 import org.renandb.kvstore.KVPair;
 
-import java.io.Serializable;
+//import java.io.Serializable;
 
-public class Record implements Serializable {
+public class Record{
     private static final long serialVersionUID = 85824334376015541L;
 
-    private final String key;
-    private final String value;
-    private final boolean empty;
+    private String key;
+    private String value;
+    private boolean empty;
 
+    public Record(){};
     private Record(String key, String value, boolean empty){
         this.key = key;
         this.value = value;
@@ -29,6 +30,8 @@ public class Record implements Serializable {
         return key;
     }
 
+
+    public String getValue(){return value;}
     public boolean isEmpty() {
         return empty;
     }
@@ -37,7 +40,7 @@ public class Record implements Serializable {
         return new KVPair(key, value);
     }
 
-    public long getSizeInBytes() {
+    public long sizeInBytes() {
         // ~ 2 bytes per string char, 1 byte for boolean
         int charLength = (key.length() + (value != null ? value.length() : 1));
         return 2 * charLength + 1;

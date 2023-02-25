@@ -36,7 +36,7 @@ public class FileBasedSSTable implements SSTableSegment {
     }
 
     private SSTableMetadata restoreMetadata() throws IOException, ClassNotFoundException {
-        return (SSTableMetadata) Serializer.restore(Files.readAllBytes(this.metadataFile));
+        return Serializer.restore(Files.readAllBytes(this.metadataFile), SSTableMetadata.class);
     }
 
     private void saveMetadata() throws IOException {
@@ -64,17 +64,18 @@ public class FileBasedSSTable implements SSTableSegment {
     }
 
     private RecordChunk parseChunk(byte[] chunkBytes) throws IOException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(chunkBytes);
-        ObjectInput in = null;
-        try {
-            in = new ObjectInputStream(bis);
-            RecordChunk chunk = (RecordChunk) in.readObject();
-            return chunk;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } finally {
-            in.close();
-        }
+        return Serializer.restore(chunkBytes, RecordChunk.class);
+//        ByteArrayInputStream bis = new ByteArrayInputStream(chunkBytes);
+//        ObjectInput in = null;
+//        try {
+//            in = new ObjectInputStream(bis);
+//            RecordChunk chunk = (RecordChunk) in.readObject();
+//            return chunk;
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            in.close();
+//        }
     }
 
     public boolean mightContain(String key){

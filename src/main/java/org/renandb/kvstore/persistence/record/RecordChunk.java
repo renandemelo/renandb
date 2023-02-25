@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class RecordChunk implements Serializable {
-    private static final long serialVersionUID = 8582433445454L;
 
     public static int BLOCK_SIZE_IN_BYTES = 1024 * 4; // 4KB
     private TreeMap<String, Record> records = new TreeMap<>();
@@ -12,15 +11,14 @@ public class RecordChunk implements Serializable {
 
     public void add(Record record) {
         records.put(record.getKey(), record);
-        sizeInBytes += record.getSizeInBytes();
+        sizeInBytes += record.sizeInBytes();
     }
 
-    public boolean isFull(int maxSizeInBytes) {
+    public boolean full(int maxSizeInBytes) {
         return sizeInBytes >= maxSizeInBytes;
     }
 
-
-    public boolean isEmpty() {
+    public boolean empty() {
         return sizeInBytes == 0;
     }
 
@@ -29,11 +27,29 @@ public class RecordChunk implements Serializable {
         return record != null? Optional.of(record) : Optional.empty();
     }
 
-    public Iterator<Record> getEntries() {
+    public Iterator<Record> entries() {
         return records.values().iterator();
     }
 
-    public String getFirstKey() {
-        return !isEmpty()? records.keySet().iterator().next() : null;
+    public String firstKey() {
+        return !empty()? records.keySet().iterator().next() : null;
     }
+
+
+    public int getSizeInBytes() {
+        return sizeInBytes;
+    }
+
+    public void setSizeInBytes(int sizeInBytes) {
+        this.sizeInBytes = sizeInBytes;
+    }
+
+    public TreeMap<String, Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(TreeMap<String, Record> records) {
+        this.records = records;
+    }
+
 }

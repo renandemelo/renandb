@@ -68,7 +68,7 @@ public class FileBasedSSTableReader {
                nextRecord = recordIterator.next();
            } else if(hasNextChunk()){
                currentChunk = chunkIterator.next();
-               recordIterator = currentChunk.getEntries();
+               recordIterator = currentChunk.entries();
                nextRecord = recordIterator.next();
            } else{
                nextRecord = null;
