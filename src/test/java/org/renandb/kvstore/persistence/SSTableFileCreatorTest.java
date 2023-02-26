@@ -41,13 +41,13 @@ public class SSTableFileCreatorTest {
     }
     @Test
     public void listOfRecordsShouldBeStoredAndThenRetrieved() throws IOException {
-        InMemorySSTable inMemorySSTable = new InMemorySSTable(this.storageDir).init();
+        InMemorySSTable inMemorySSTable = new InMemorySSTable(new DirManager(this.storageDir)).init();
         List<KVPair> pairs = generatePairs(1000);
         for(KVPair pair: pairs){
             inMemorySSTable.store(Record.from(pair));
         }
 
-        FileBasedSSTable ssTable = new SSTableFileCreator(inMemorySSTable, storageDir, 100).createFullNew();
+        FileBasedSSTable ssTable = new SSTableFileCreator(inMemorySSTable, new DirManager(storageDir), 100).createFullNew();
         for(KVPair pair : pairs){
             String key = pair.getKey();
             assertTrue(ssTable.mightContain(key));
@@ -61,12 +61,12 @@ public class SSTableFileCreatorTest {
 
     @Test
     public void ssTableShouldNotRetrieveUnsavedKeys() throws IOException {
-        InMemorySSTable inMemorySSTable = new InMemorySSTable(this.storageDir).init();
+        InMemorySSTable inMemorySSTable = new InMemorySSTable(new DirManager(this.storageDir)).init();
         for(KVPair pair: generatePairs(1000)){
             inMemorySSTable.store(Record.from(pair));
         }
 
-        FileBasedSSTable ssTable = new SSTableFileCreator(inMemorySSTable, storageDir, 100).createFullNew();
+        FileBasedSSTable ssTable = new SSTableFileCreator(inMemorySSTable, new DirManager(storageDir), 100).createFullNew();
 
         assertTrue(ssTable.retrieve("AnotherKey").isEmpty());
     }

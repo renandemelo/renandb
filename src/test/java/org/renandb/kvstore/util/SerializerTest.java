@@ -5,10 +5,13 @@ import org.renandb.kvstore.KVPair;
 import org.renandb.kvstore.persistence.BloomFilter;
 import org.renandb.kvstore.persistence.filesegment.ChunkLocation;
 import org.renandb.kvstore.persistence.filesegment.SSTableMetadata;
+import org.renandb.kvstore.persistence.maintenance.DbState;
 import org.renandb.kvstore.persistence.maintenance.Serializer;
 
 import org.renandb.kvstore.persistence.record.Record;
 import org.renandb.kvstore.persistence.record.RecordChunk;
+import org.renandb.kvstore.persistence.state.SegmentReference;
+import org.renandb.kvstore.persistence.state.SegmentType;
 
 import java.io.IOException;
 import java.util.*;
@@ -67,15 +70,26 @@ public class SerializerTest {
         assertEquals(locations.get(1), actualLocations.get(1));
         assertEquals(locations.get(2), actualLocations.get(2));
 
-
-//
-//
-//        assertEquals(new KVPair("AAA", "BBB"), entrySet.get(0).getValue().toPair());
-//        assertEquals("CCC", entrySet.get(1).getKey());
-//        assertEquals(new KVPair("CCC", "DDD"), entrySet.get(1).getValue().toPair());
-//        assertEquals("EEE", entrySet.get(2).getKey());
-//        assertTrue(entrySet.get(2).getValue().isEmpty());
     }
+
+    @Test
+    public void savedDbStateCanBeRestored() throws IOException {
+        DbState expected = new DbState();
+        List<SegmentReference> expectedSegments = List.of(
+                new SegmentReference(SegmentType.IN_MEMORY, "123-log-file"),
+                new SegmentReference(SegmentType.FILE_BASED, "333-segment-dir")
+                );
+        expected.setSegmentReferenceList(expectedSegments);
+        byte[] bytes = Serializer.serialize(expected);
+        DbState actual = Serializer.restore(bytes, DbState.class);
+
+        List<SegmentReference> actualSegments = actual.getSegmentReferenceList();
+        assertEquals(expectedSegments.get(0).getType(), actualSegments.get(0).getType());
+        assertEquals(expectedSegments.get(0).getBasePath(), actualSegments.get(0).getBasePath());
+        assertEquals(expectedSegments.get(1).getType(), actualSegments.get(1).getType());
+        assertEquals(expectedSegments.get(1).getBasePath(), actualSegments.get(1).getBasePath());
+    }
+
 
 
 }

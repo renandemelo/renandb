@@ -1,6 +1,7 @@
 package org.renandb.kvstore.persistence.maintenance;
 
 import org.renandb.kvstore.persistence.BloomFilter;
+import org.renandb.kvstore.persistence.DirManager;
 import org.renandb.kvstore.persistence.SSTableSegment;
 import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
 import org.renandb.kvstore.persistence.filesegment.SSTableFileCreator;
@@ -16,13 +17,13 @@ public class SegmentMerger implements Runnable{
 
     private static final int MAX_RECORDS_READ = 50000;
 
-    private final Path baseDir;
     private final LoadChecker loadChecker;
     private final MergedSegmentReceiver receiver;
+    private final DirManager dirManager;
     private List<SSTableSegment> ssTableSegments = new ArrayList<>();
 
-    public SegmentMerger(Path baseDir, LoadChecker loadChecker, MergedSegmentReceiver receiver) {
-        this.baseDir = baseDir;
+    public SegmentMerger(DirManager dirManager, LoadChecker loadChecker, MergedSegmentReceiver receiver) {
+        this.dirManager = dirManager;
         this.loadChecker = loadChecker;
         this.receiver = receiver;
     }
@@ -62,7 +63,7 @@ public class SegmentMerger implements Runnable{
 
                 MergeHandler mergeHandler = new MergeHandler(table1, table2);
                 mergeHandler.init();
-                SSTableFileCreator fileCreator = new SSTableFileCreator(mergedFilter, this.baseDir);
+                SSTableFileCreator fileCreator = new SSTableFileCreator(mergedFilter, this.dirManager);
 
                 fileCreator.startNew();
                 try{

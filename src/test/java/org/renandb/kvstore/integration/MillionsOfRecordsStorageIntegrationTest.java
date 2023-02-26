@@ -32,12 +32,13 @@ public class MillionsOfRecordsStorageIntegrationTest {
     @Before
     public void prepareStorage() throws IOException, ClassNotFoundException {
         storageDir = FileUtil.createTempDir();
+        storageDir = Path.of("/tmp/mydb");
         LOGGER.info("Using folder:" + storageDir);
         store = new LSMPersistentStorage(TestingStandards.getDefaultConfig().setDir(storageDir.toString())).init();
     }
     @After
     public void deleteStorage() throws IOException {
-        FileUtil.deleteDir(storageDir);
+//        FileUtil.deleteDir(storageDir);
     }
     @Test
     public void keyAccessIsFastEvenInMillionsOfRecords() throws IOException {

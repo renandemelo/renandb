@@ -16,26 +16,27 @@ import org.renandb.kvstore.persistence.maintenance.Serializer;
  */
 public class InMemorySSTable implements SSTableSegment {
 
-    private final Path storageDir;
+    private final DirManager dirManager;
     private long MAX_VALUE_BYTES = 1024 * 1024 * 10; // 10MB
     private TreeMap<String, Record> records = new TreeMap<>();
     private BloomFilter bloomFilter = new BloomFilter();
     private long sizeInBytes;
     private Path logFile;
 
-    public InMemorySSTable(Path storageDir) {
-        this.storageDir = storageDir;
+    public InMemorySSTable(DirManager dirManager) {
+        this.dirManager = dirManager;
     }
     public synchronized InMemorySSTable init(Optional<Path> existingLogFile) throws IOException {
         if (existingLogFile.isPresent()){
             logFile = existingLogFile.get();
             restoreFromFile(logFile);
         }else{
-            logFile = Path.of(storageDir + File.separator + System.currentTimeMillis() + "-" + UUID.randomUUID() + "-log-file");
+            logFile = dirManager.newInMemoryLogFile();
             logFile.toFile().createNewFile();
         }
         return this;
     }
+
 
     private void restoreFromFile(Path path) throws IOException {
         try (InputStream is = new ByteArrayInputStream(Files.readAllBytes(path))) {

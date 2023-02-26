@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.renandb.kvstore.persistence.DirManager;
 import org.renandb.kvstore.persistence.SSTableSegment;
 import org.renandb.kvstore.persistence.maintenance.Serializer;
 import org.renandb.kvstore.persistence.record.Record;
@@ -18,10 +19,10 @@ public class FileBasedSSTable implements SSTableSegment {
     private Path metadataFile;
     private Path segmentDir;
 
-    public FileBasedSSTable(Path dir) {
+    public FileBasedSSTable(Path dir, DirManager dirManager) {
         this.segmentDir = dir;
-        this.metadataFile = Path.of( segmentDir + File.separator + "metadata");
-        this.contentFile = Path.of(segmentDir + File.separator + "content");
+        this.metadataFile = dirManager.metadataFor(segmentDir);
+        this.contentFile = dirManager.contentFor(segmentDir);
     }
 
     public FileBasedSSTable init() throws IOException, ClassNotFoundException {
@@ -65,17 +66,6 @@ public class FileBasedSSTable implements SSTableSegment {
 
     private RecordChunk parseChunk(byte[] chunkBytes) throws IOException {
         return Serializer.restore(chunkBytes, RecordChunk.class);
-//        ByteArrayInputStream bis = new ByteArrayInputStream(chunkBytes);
-//        ObjectInput in = null;
-//        try {
-//            in = new ObjectInputStream(bis);
-//            RecordChunk chunk = (RecordChunk) in.readObject();
-//            return chunk;
-//        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        } finally {
-//            in.close();
-//        }
     }
 
     public boolean mightContain(String key){

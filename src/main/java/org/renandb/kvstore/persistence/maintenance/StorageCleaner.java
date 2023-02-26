@@ -1,5 +1,7 @@
 package org.renandb.kvstore.persistence.maintenance;
 
+import org.renandb.kvstore.persistence.DirManager;
+import org.renandb.kvstore.persistence.state.SegmentReference;
 import org.renandb.kvstore.util.FileUtil;
 
 import java.io.File;
@@ -15,13 +17,15 @@ import java.util.stream.Stream;
 public class StorageCleaner implements Runnable{
 
     private static final int MAX_WAIT_TIME_MILLIS = 40 * 1000; // 50 seconds
-    private final Path baseDir;
+    private final DirManager dirManager;
     private final LoadChecker loadChecker;
+    private final StateManager stateManager;
     private boolean dirty = false;
 
-    public StorageCleaner(Path baseDir, LoadChecker usageChecker){
-        this.baseDir = baseDir;
+    public StorageCleaner(DirManager dirManager, LoadChecker usageChecker, StateManager stateManager){
+        this.dirManager = dirManager;
         this.loadChecker = usageChecker;
+        this.stateManager = stateManager;
     }
 
     public synchronized void notifyChanges() {
@@ -57,29 +61,25 @@ public class StorageCleaner implements Runnable{
     }
 
     private void cleanOutdatedFiles() throws IOException {
-        List<Path> stateFiles = new StateFileFinder(this.baseDir).findStateFiles();
-        List<List<String>> linesForState = stateFiles.stream().map(p -> {
-            try {
-                return Files.readAllLines(p);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
-        if(!linesForState.isEmpty()){
-            Set<String> currentRelatedFiles = new HashSet<>(linesForState.get(0));
-            Stream<Path> relatedFilesForDelete = linesForState.stream()
-                        .flatMap(List::stream).filter(f -> !currentRelatedFiles.contains(f))
-                        .map(f -> Path.of(baseDir + File.separator + f));
-            List<Path> filesToDelete = Stream.concat(relatedFilesForDelete, stateFiles.stream().skip(1)).collect(Collectors.toList());
+        List<DbState> stateHistory = stateManager.getStateHistory();
+        if(!stateHistory.isEmpty()){
+            List<String> filesInCurrentState = stateHistory.get(0).getSegmentReferenceList().stream()
+                    .map(r -> r.getBasePath()).collect(Collectors.toList());
+            Stream<Path> relatedFilesForDelete = stateHistory.stream()
+                        .map(DbState::getSegmentReferenceList)
+                        .flatMap(List::stream)
+                        .map(SegmentReference::getBasePath)
+                        .filter(f -> !filesInCurrentState.contains(f))
+                        .map(f -> Path.of(dirManager.resolve(f)));
+            List<Path> filesToDelete = Stream.concat(relatedFilesForDelete,
+                            stateHistory.stream().skip(1)
+                    .map(DbState::getFile)).collect(Collectors.toList());
 
             for(Path toDelete : filesToDelete){
                 File f = toDelete.toFile();
                 if(f.isDirectory()) FileUtil.deleteDir(toDelete);
                 else if (f.exists()) f.delete();
             }
-            filesToDelete.forEach(f -> {
-
-            });
         }
     }
 

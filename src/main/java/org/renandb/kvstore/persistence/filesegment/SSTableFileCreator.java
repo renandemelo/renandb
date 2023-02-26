@@ -1,6 +1,7 @@
 package org.renandb.kvstore.persistence.filesegment;
 
 import org.renandb.kvstore.persistence.BloomFilter;
+import org.renandb.kvstore.persistence.DirManager;
 import org.renandb.kvstore.persistence.record.RecordChunk;
 
 import java.io.*;
@@ -14,10 +15,9 @@ import org.renandb.kvstore.persistence.maintenance.Serializer;
 
 public class SSTableFileCreator {
 
-    private final String contentFile;
-//    private final TreeMap<String, Record> records;
-    private final Path segmentDir;
+    private final Path contentFile;
     private final int maxChunkSizeInBytes;
+    private final Path segmentDir;
     private InMemorySSTable inMemorySegment;
     private SSTableMetadata metadata;
     private RecordChunk current;
@@ -25,23 +25,25 @@ public class SSTableFileCreator {
     int contentOffset = 0;
     private BufferedOutputStream bos;
     private FileOutputStream fos;
+    private DirManager dirManager;
 
-    public SSTableFileCreator(BloomFilter bloomFilter, Path baseDir, int maxChunkSizeInBytes) {
-        segmentDir = Path.of(baseDir.toAbsolutePath() + File.separator + System.currentTimeMillis() + "-" + UUID.randomUUID() + "-segment");
-        contentFile = segmentDir + File.separator + "content";
+    public SSTableFileCreator(BloomFilter bloomFilter, DirManager dirManager, int maxChunkSizeInBytes) {
+        this.dirManager = dirManager;
+        segmentDir = dirManager.newSegmentDir();
+        contentFile = dirManager.contentFor(segmentDir);
         metadata = new SSTableMetadata(bloomFilter);
         this.maxChunkSizeInBytes = maxChunkSizeInBytes;
     }
-    public SSTableFileCreator(BloomFilter bloomFilter, Path baseDir) {
-        this(bloomFilter, baseDir, RecordChunk.BLOCK_SIZE_IN_BYTES);
+    public SSTableFileCreator(BloomFilter bloomFilter, DirManager dirManager) {
+        this(bloomFilter, dirManager, RecordChunk.BLOCK_SIZE_IN_BYTES);
     }
 
-    public SSTableFileCreator(InMemorySSTable openSegment, Path baseDir, int maxChunkSizeInBytes) {
-        this(openSegment.getBloomFilter(), baseDir, maxChunkSizeInBytes);
+    public SSTableFileCreator(InMemorySSTable openSegment, DirManager dirManager, int maxChunkSizeInBytes) {
+        this(openSegment.getBloomFilter(), dirManager, maxChunkSizeInBytes);
         this.inMemorySegment = openSegment;
     }
-    public SSTableFileCreator(InMemorySSTable openSegment, Path baseDir) {
-        this(openSegment,baseDir,RecordChunk.BLOCK_SIZE_IN_BYTES);
+    public SSTableFileCreator(InMemorySSTable openSegment, DirManager dirManager) {
+        this(openSegment,dirManager,RecordChunk.BLOCK_SIZE_IN_BYTES);
     }
 
     public FileBasedSSTable createFullNew() throws IOException {
@@ -62,14 +64,14 @@ public class SSTableFileCreator {
     }
 
     public FileBasedSSTable finishNew() throws IOException {
-        FileBasedSSTable segment = new FileBasedSSTable(segmentDir);
+        FileBasedSSTable segment = new FileBasedSSTable(segmentDir, this.dirManager);
         segment.init(metadata);
         return segment;
     }
 
     public void startNew() throws IOException {
         Files.createDirectories(segmentDir);
-        fos = new FileOutputStream(contentFile, false);
+        fos = new FileOutputStream(this.contentFile.toFile(), false);
         bos = new BufferedOutputStream(fos);
     }
 

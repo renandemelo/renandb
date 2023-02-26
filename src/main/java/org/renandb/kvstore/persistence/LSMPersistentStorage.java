@@ -36,6 +36,7 @@ public class LSMPersistentStorage implements MergedSegmentReceiver {
 
     private final StateManager stateManager;
     private final StorageConfig config;
+    private final DirManager dirManager;
     private LinkedList<SSTableSegment> segments;
     private final LoadChecker loadChecker;
     private SegmentMerger segmentMerger;
@@ -43,22 +44,25 @@ public class LSMPersistentStorage implements MergedSegmentReceiver {
     public LSMPersistentStorage(StorageConfig config){
         this.config = config;
         this.loadChecker = new LoadChecker();
-        this.stateManager = new StateManager(config.getDir(), loadChecker);
-        this.segmentMerger = new SegmentMerger(config.getDir(), loadChecker, this);
+        this.dirManager = new DirManager(config.getDir());
+        this.stateManager = new StateManager(dirManager, loadChecker );
+        this.segmentMerger = new SegmentMerger(dirManager, loadChecker, this);
     }
 
     public synchronized LSMPersistentStorage init() throws IOException, ClassNotFoundException {
+        dirManager.init();
         if(config.isSyncProcessesActive()){
             this.stateManager.init();
             this.segmentMerger.init();
         }
         segments = new LinkedList<>(this.stateManager.getSegmentList());
         if(segments.isEmpty()){
-            segments.add(new InMemorySSTable(config.getDir()).init());
+            segments.add(new InMemorySSTable(this.dirManager).init());
         }
         this.segmentMerger.notifyChange(segments);
         return this;
     }
+
     private Optional<Record> findMostRecentFor(final String key) throws IOException {
         List<SSTableSegment> dataSources;
         synchronized (this){
@@ -104,12 +108,12 @@ public class LSMPersistentStorage implements MergedSegmentReceiver {
                 synchronized (segmentToClose){
                     // Replace in-memory for another one fast!
                     // Don't stop serving read requests just because we're closing the in-memory segment.
-                    this.segments.addFirst(new InMemorySSTable(config.getDir()).init());
+                    this.segments.addFirst(new InMemorySSTable(this.dirManager).init());
                 }
                 saveNewDbState();
             }
             // Producing an equivalent file-based segment can take some time... not blocking in the meanwhile :)
-            FileBasedSSTable fileBasedSegment = new SSTableFileCreator(segmentToClose, config.getDir()).createFullNew();
+            FileBasedSSTable fileBasedSegment = new SSTableFileCreator(segmentToClose, this.dirManager).createFullNew();
             synchronized (this){
                 int indexToReplace = this.segments.indexOf(segmentToClose); // should be first.
                 this.segments.set(indexToReplace, fileBasedSegment);
@@ -121,10 +125,7 @@ public class LSMPersistentStorage implements MergedSegmentReceiver {
         }
     }
     private synchronized void saveNewDbState() throws IOException {
-        List<String> filesForState = segments.stream()
-                .map(s -> s.getFile().toFile().getName())
-                .collect(Collectors.toList());
-        this.stateManager.saveState(filesForState);
+        this.stateManager.saveState(segments);
         this.segmentMerger.notifyChange(new ArrayList<>(this.segments));
     }
 
