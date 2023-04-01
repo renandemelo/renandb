@@ -1,12 +1,12 @@
-package org.renandb.kvstore;
+package org.renandb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KVSpringBootApplication {
+public class RenanDb {
 
     public static void main(String[] args) {
-        SpringApplication.run(KVSpringBootApplication.class, args);
+        SpringApplication.run(RenanDb.class, args);
     }
 }

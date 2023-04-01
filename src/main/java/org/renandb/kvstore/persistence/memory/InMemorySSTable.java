@@ -3,13 +3,10 @@ package org.renandb.kvstore.persistence;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.renandb.kvstore.persistence.record.Record;
-import org.renandb.kvstore.persistence.maintenance.Serializer;
 
 /**
  * SSTable based on memory but with append-only log to guarantee durability.

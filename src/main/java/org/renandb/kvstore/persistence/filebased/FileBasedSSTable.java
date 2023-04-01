@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.renandb.kvstore.persistence.DirManager;
 import org.renandb.kvstore.persistence.SSTableSegment;
-import org.renandb.kvstore.persistence.maintenance.Serializer;
+import org.renandb.kvstore.persistence.Serializer;
 import org.renandb.kvstore.persistence.record.Record;
 import org.renandb.kvstore.persistence.record.RecordChunk;
 import org.renandb.kvstore.util.FileUtil;

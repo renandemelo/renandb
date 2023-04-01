@@ -11,7 +11,7 @@ import java.util.*;
 
 import org.renandb.kvstore.persistence.record.Record;
 import org.renandb.kvstore.persistence.InMemorySSTable;
-import org.renandb.kvstore.persistence.maintenance.Serializer;
+import org.renandb.kvstore.persistence.Serializer;
 
 public class SSTableFileCreator {
 
