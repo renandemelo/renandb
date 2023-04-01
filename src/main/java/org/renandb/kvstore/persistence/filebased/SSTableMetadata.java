@@ -1,6 +1,7 @@
-package org.renandb.kvstore.persistence.filesegment;
+package org.renandb.kvstore.persistence.filebased;
 
 import org.renandb.kvstore.persistence.BloomFilter;
+import org.renandb.kvstore.persistence.filebased.ChunkLocation;
 
 import java.io.Serializable;
 import java.util.TreeSet;

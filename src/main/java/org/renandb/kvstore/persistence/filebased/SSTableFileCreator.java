@@ -1,4 +1,4 @@
-package org.renandb.kvstore.persistence.filesegment;
+package org.renandb.kvstore.persistence.filebased;
 
 import org.renandb.kvstore.persistence.BloomFilter;
 import org.renandb.kvstore.persistence.DirManager;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import org.renandb.kvstore.persistence.record.Record;
-import org.renandb.kvstore.persistence.InMemorySSTable;
+import org.renandb.kvstore.persistence.memory.InMemorySSTable;
 import org.renandb.kvstore.persistence.Serializer;
 
 public class SSTableFileCreator {

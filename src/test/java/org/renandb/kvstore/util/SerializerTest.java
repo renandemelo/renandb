@@ -3,10 +3,10 @@ package org.renandb.kvstore.util;
 import org.junit.Test;
 import org.renandb.kvstore.KVPair;
 import org.renandb.kvstore.persistence.BloomFilter;
-import org.renandb.kvstore.persistence.filesegment.ChunkLocation;
-import org.renandb.kvstore.persistence.filesegment.SSTableMetadata;
-import org.renandb.kvstore.persistence.maintenance.DbState;
-import org.renandb.kvstore.persistence.maintenance.Serializer;
+import org.renandb.kvstore.persistence.filebased.ChunkLocation;
+import org.renandb.kvstore.persistence.filebased.SSTableMetadata;
+import org.renandb.kvstore.persistence.state.DbState;
+import org.renandb.kvstore.persistence.Serializer;
 
 import org.renandb.kvstore.persistence.record.Record;
 import org.renandb.kvstore.persistence.record.RecordChunk;

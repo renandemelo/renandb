@@ -1,7 +1,7 @@
 package org.renandb.kvstore.persistence.state;
 
 
-import org.renandb.kvstore.persistence.InMemorySSTable;
+import org.renandb.kvstore.persistence.memory.InMemorySSTable;
 import org.renandb.kvstore.persistence.SSTableSegment;
 
 public class SegmentReference {

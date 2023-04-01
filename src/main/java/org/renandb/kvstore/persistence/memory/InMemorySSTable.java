@@ -1,4 +1,4 @@
-package org.renandb.kvstore.persistence;
+package org.renandb.kvstore.persistence.memory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -6,6 +6,10 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import org.renandb.kvstore.persistence.BloomFilter;
+import org.renandb.kvstore.persistence.DirManager;
+import org.renandb.kvstore.persistence.SSTableSegment;
+import org.renandb.kvstore.persistence.Serializer;
 import org.renandb.kvstore.persistence.record.Record;
 
 /**

@@ -3,12 +3,11 @@ package org.renandb.kvstore.persistence.maintenance;
 import org.renandb.kvstore.persistence.BloomFilter;
 import org.renandb.kvstore.persistence.DirManager;
 import org.renandb.kvstore.persistence.SSTableSegment;
-import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
-import org.renandb.kvstore.persistence.filesegment.SSTableFileCreator;
+import org.renandb.kvstore.persistence.filebased.FileBasedSSTable;
+import org.renandb.kvstore.persistence.filebased.SSTableFileCreator;
 import org.renandb.kvstore.persistence.record.Record;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 

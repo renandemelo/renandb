@@ -1,7 +1,6 @@
-package org.renandb.kvstore.persistence.maintenance;
+package org.renandb.kvstore.persistence.state;
 
 import org.renandb.kvstore.persistence.SSTableSegment;
-import org.renandb.kvstore.persistence.state.SegmentReference;
 
 import java.beans.Transient;
 import java.nio.file.Path;

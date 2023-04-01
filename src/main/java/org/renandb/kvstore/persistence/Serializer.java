@@ -1,4 +1,4 @@
-package org.renandb.kvstore.persistence.maintenance;
+package org.renandb.kvstore.persistence;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

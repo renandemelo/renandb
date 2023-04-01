@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.renandb.kvstore.config.StorageConfig;
-import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
-import org.renandb.kvstore.persistence.filesegment.SSTableFileCreator;
+import org.renandb.kvstore.persistence.filebased.FileBasedSSTable;
+import org.renandb.kvstore.persistence.filebased.SSTableFileCreator;
 import org.renandb.kvstore.persistence.maintenance.MergedSegmentReceiver;
 import org.renandb.kvstore.persistence.maintenance.SegmentMerger;
-import org.renandb.kvstore.persistence.maintenance.StateManager;
+import org.renandb.kvstore.persistence.memory.InMemorySSTable;
+import org.renandb.kvstore.persistence.state.StateManager;
 import org.renandb.kvstore.persistence.maintenance.LoadChecker;
 import org.renandb.kvstore.persistence.record.Record;
 

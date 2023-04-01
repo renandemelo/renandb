@@ -1,9 +1,10 @@
 package org.renandb.kvstore.persistence;
 
+import org.renandb.kvstore.persistence.memory.InMemorySSTable;
 import org.renandb.kvstore.util.FileUtil;
 import org.renandb.kvstore.KVPair;
-import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
-import org.renandb.kvstore.persistence.filesegment.SSTableFileCreator;
+import org.renandb.kvstore.persistence.filebased.FileBasedSSTable;
+import org.renandb.kvstore.persistence.filebased.SSTableFileCreator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

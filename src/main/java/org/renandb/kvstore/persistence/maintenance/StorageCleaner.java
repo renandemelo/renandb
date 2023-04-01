@@ -1,16 +1,15 @@
 package org.renandb.kvstore.persistence.maintenance;
 
 import org.renandb.kvstore.persistence.DirManager;
+import org.renandb.kvstore.persistence.state.DbState;
 import org.renandb.kvstore.persistence.state.SegmentReference;
+import org.renandb.kvstore.persistence.state.StateManager;
 import org.renandb.kvstore.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

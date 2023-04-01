@@ -1,6 +1,6 @@
 package org.renandb.kvstore.persistence.maintenance;
 
-import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
+import org.renandb.kvstore.persistence.filebased.FileBasedSSTable;
 import org.renandb.kvstore.persistence.record.Record;
 
 import java.io.IOException;

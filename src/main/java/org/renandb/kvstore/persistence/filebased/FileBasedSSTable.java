@@ -1,4 +1,4 @@
-package org.renandb.kvstore.persistence.filesegment;
+package org.renandb.kvstore.persistence.filebased;
 
 import java.io.*;
 import java.nio.file.Files;

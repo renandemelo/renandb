@@ -1,11 +1,12 @@
-package org.renandb.kvstore.persistence.maintenance;
+package org.renandb.kvstore.persistence.state;
 
 import org.renandb.kvstore.persistence.DirManager;
-import org.renandb.kvstore.persistence.InMemorySSTable;
+import org.renandb.kvstore.persistence.memory.InMemorySSTable;
 import org.renandb.kvstore.persistence.SSTableSegment;
-import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
-import org.renandb.kvstore.persistence.state.SegmentReference;
-import org.renandb.kvstore.persistence.state.SegmentType;
+import org.renandb.kvstore.persistence.filebased.FileBasedSSTable;
+import org.renandb.kvstore.persistence.maintenance.LoadChecker;
+import org.renandb.kvstore.persistence.Serializer;
+import org.renandb.kvstore.persistence.maintenance.StorageCleaner;
 
 import java.io.IOException;
 import java.nio.file.Files;

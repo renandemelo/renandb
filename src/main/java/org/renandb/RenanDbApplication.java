@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RenanDb {
+public class RenanDbApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RenanDb.class, args);
+        SpringApplication.run(RenanDbApplication.class, args);
     }
 }

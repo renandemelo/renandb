@@ -1,4 +1,4 @@
-package org.renandb.kvstore.persistence.maintenance;
+package org.renandb.kvstore.persistence.state;
 
 import org.renandb.kvstore.persistence.DirManager;
 

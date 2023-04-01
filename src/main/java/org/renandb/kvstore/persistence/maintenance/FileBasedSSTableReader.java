@@ -1,7 +1,7 @@
 package org.renandb.kvstore.persistence.maintenance;
 
-import org.renandb.kvstore.persistence.filesegment.ChunkLocation;
-import org.renandb.kvstore.persistence.filesegment.FileBasedSSTable;
+import org.renandb.kvstore.persistence.filebased.ChunkLocation;
+import org.renandb.kvstore.persistence.filebased.FileBasedSSTable;
 import org.renandb.kvstore.persistence.record.Record;
 import org.renandb.kvstore.persistence.record.RecordChunk;
 
